@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Component
+@SuppressWarnings("all")
 public class KuCoin {
+
     public List<CryptocurrencyPair> parser() {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
         try {
@@ -26,31 +26,27 @@ public class KuCoin {
 
 
 
-    public List<CryptocurrencyPair> usdtParser() throws JsonProcessingException {
+    /**
+     * @return <h3>All Cryptocurrencys with USDT </h3>
+     * @throws JsonProcessingException
+     */
+    public List<CryptocurrencyPair> usdtParser() throws IOException {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
-        ObjectMapper kuCoinMapper = new ObjectMapper();
-        JsonNode parseKuCoin = kuCoinMapper.readTree(getAllCurrencyPairs("https://www.mexc.com/open/api/v2/market/ticker"));
-        String kuCoinExchangeName = null;
-        // Return all pairs with their price //2000
-        for(int i = 0; i < 2000; i++) {
-            CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
+        Binance binance = new Binance();
+        List<CryptocurrencyPair> binanceParser = binance.usdtParser();
+        for (CryptocurrencyPair binanceData : binanceParser) {
             try {
-                kuCoinExchangeName = parseKuCoin.get("data").get(i).get("symbol").textValue();
+                CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
                 cryptocurrencyPair.setExchange("KuCoin");
-
-                boolean isExistUSDT = kuCoinExchangeName.indexOf("_USDT") != -1;
-                if (isExistUSDT == true) {
-                    String firstCrypto = getOneSymbolFromKuCoin(kuCoinExchangeName.replace("_", "-"));
-                    cryptocurrencyPair.setFirstCrypto(firstCrypto.replace("-USDT", ""));
-                    cryptocurrencyPair.setSecondCrypto("USDT");
-                    cryptocurrencyPair.setAmount(Double.valueOf(getAmount(kuCoinExchangeName.replace("_", "-"))));
-                    cryptocurrencyPairs.add(cryptocurrencyPair);
-                }else continue;
-            }catch (NullPointerException e){
+                cryptocurrencyPair.setFirstCrypto(binanceData.getFirstCrypto());
+                cryptocurrencyPair.setSecondCrypto("USDT");
+                String a = binanceData.getFirstCrypto();
+                cryptocurrencyPair.setAmount(Double.valueOf(getAmount(a.replace(a, a + "-USDT"))));
+                cryptocurrencyPairs.add(cryptocurrencyPair);
+            } catch (NullPointerException e) {
                 continue;
             }
         }
-
 
         return cryptocurrencyPairs;
     }
@@ -60,27 +56,20 @@ public class KuCoin {
      * @throws JsonProcessingException
      */
 
-    public List<CryptocurrencyPair> btcParser() throws JsonProcessingException {
+    public List<CryptocurrencyPair> btcParser() throws IOException {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
-        ObjectMapper kuCoinMapper = new ObjectMapper();
-        JsonNode parseKuCoin = kuCoinMapper.readTree(getAllCurrencyPairs("https://www.mexc.com/open/api/v2/market/ticker"));
-        String kuCoinExchangeName = null;
-        // Return all pairs with their price //2000
-        for(int i = 0; i < 2000; i++) {
-            CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
+        Binance binance = new Binance();
+        List<CryptocurrencyPair> binanceParser = binance.btcParser();
+        for (CryptocurrencyPair binanceData : binanceParser) {
             try {
-                kuCoinExchangeName = parseKuCoin.get("data").get(i).get("symbol").textValue();
+                CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
                 cryptocurrencyPair.setExchange("KuCoin");
-                boolean isExistBtc = kuCoinExchangeName.indexOf("_BTC") != -1;
-                if (isExistBtc == true){
-                    String firstCrypto = getOneSymbolFromKuCoin(kuCoinExchangeName.replace("_", "-"));
-                    cryptocurrencyPair.setFirstCrypto(firstCrypto.replace("-BTC", ""));
-                    cryptocurrencyPair.setSecondCrypto("BTC");
-                    cryptocurrencyPair.setAmount(Double.valueOf(getAmount(kuCoinExchangeName.replace("_", "-"))));
-                    cryptocurrencyPairs.add(cryptocurrencyPair);
-                }else continue;
-
-            }catch (NullPointerException e){
+                cryptocurrencyPair.setFirstCrypto(binanceData.getFirstCrypto());
+                cryptocurrencyPair.setSecondCrypto("BTC");
+                String a = binanceData.getFirstCrypto();
+                cryptocurrencyPair.setAmount(Double.valueOf(getAmount(a.replace(a, a + "-BTC"))));
+                cryptocurrencyPairs.add(cryptocurrencyPair);
+            } catch (NullPointerException e) {
                 continue;
             }
         }

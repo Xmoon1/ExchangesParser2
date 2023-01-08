@@ -23,12 +23,12 @@ public class Bybit {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
         try {
             cryptocurrencyPairs.addAll(usdtParser());
+            cryptocurrencyPairs.addAll(btcParser());
         } catch (IOException e) {
             e.printStackTrace();
         }
         return cryptocurrencyPairs;
     }
-
 
     public List<CryptocurrencyPair> usdtParser() throws IOException{
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
@@ -44,8 +44,8 @@ public class Bybit {
             cryptocurrencyPair.setExchange("ByBit");
 
             String firstCrypto = obj.get("result").get(i).get("symbol").textValue();
-            boolean isSecondCryptoUSDT = firstCrypto.indexOf("USDT") !=-1;
-            if (isSecondCryptoUSDT == true){
+            boolean isSecondCryptoUSDT = firstCrypto.contains("USDT");
+            if (isSecondCryptoUSDT){
                 cryptocurrencyPair.setFirstCrypto(firstCrypto.replace("USDT", ""));
                 cryptocurrencyPair.setAmount(Double.valueOf(obj.get("result").get(i).get("index_price").textValue()));
                 cryptocurrencyPair.setSecondCrypto("USDT");
@@ -58,5 +58,35 @@ public class Bybit {
 
         return cryptocurrencyPairs;
     }
+
+    public List<CryptocurrencyPair> btcParser() throws IOException{
+        List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
+
+        RestTemplate restTemplate = new RestTemplate();
+        String req = "https://api-testnet.bybit.com/v2/public/tickers";
+        String response = restTemplate.getForObject(req, String.class);
+        ObjectMapper objectMapperForMexc = new ObjectMapper();
+        JsonNode obj = objectMapperForMexc.readTree(response);
+
+        for(int i = 0; i < 195; i++) {
+            CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
+            cryptocurrencyPair.setExchange("ByBit");
+
+            String firstCrypto = obj.get("result").get(i).get("symbol").textValue();
+            boolean isSecondCryptoUSDT = firstCrypto.contains("BTC");
+            if (isSecondCryptoUSDT){
+                cryptocurrencyPair.setFirstCrypto(firstCrypto.replace("BTC", ""));
+                cryptocurrencyPair.setAmount(Double.valueOf(obj.get("result").get(i).get("index_price").textValue()));
+                cryptocurrencyPair.setSecondCrypto("BTC");
+
+                cryptocurrencyPairs.add(cryptocurrencyPair);
+            }else {
+                continue;
+            }
+        }
+        return cryptocurrencyPairs;
+    }
+
+
 
 }

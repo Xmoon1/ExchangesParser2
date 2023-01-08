@@ -27,27 +27,45 @@ public class Huobi {
         return cryptocurrencyPairs;
     }
 
-    public List<CryptocurrencyPair> usdtParser() throws JsonProcessingException {
+    public List<CryptocurrencyPair> usdtParser() throws IOException {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
+        Binance binance = new Binance();
 
-        ObjectMapper huobiMapper = new ObjectMapper();
-        JsonNode parseHuobi= huobiMapper.readTree(getAllCurrencyPairs("https://api.huobi.pro/market/tickers"));
-
-        for(int i = 0; i < 955; i++) { // 955
-            CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
-            try {
-                String firstCryptoName = getOneSymbolFromHuobi(parseHuobi.get("data").get(i).get("symbol").textValue()).toUpperCase();
+        List<CryptocurrencyPair> binanceParser = binance.usdtParser();
+        for (CryptocurrencyPair binanceData : binanceParser) {
+            try{
+                CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
                 cryptocurrencyPair.setExchange("Huobi");
-
-                boolean isSecondCryptoUSDT = firstCryptoName.indexOf("USDT") != -1;
-                if (isSecondCryptoUSDT == true){
-                    cryptocurrencyPair.setFirstCrypto(firstCryptoName.replace("USDT", ""));
-                    cryptocurrencyPair.setSecondCrypto("USDT");
-                    cryptocurrencyPair.setAmount(Double.valueOf(getAmount(parseHuobi.get("data").get(i).get("symbol").textValue())).doubleValue());
-                    cryptocurrencyPairs.add(cryptocurrencyPair);
-                }
-
+                cryptocurrencyPair.setFirstCrypto(binanceData.getFirstCrypto());
+                cryptocurrencyPair.setSecondCrypto("USDT");
+                String a = binanceData.getFirstCrypto();
+                cryptocurrencyPair.setAmount(Double.valueOf(getAmount(a.replace(a, a.toLowerCase() + "usdt"))));
+                cryptocurrencyPairs.add(cryptocurrencyPair);
             }catch (NullPointerException e){
+                continue;
+            }
+
+        }
+
+        return cryptocurrencyPairs;
+    }
+
+
+    public List<CryptocurrencyPair> btcParser() throws IOException {
+        List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
+        Binance binance = new Binance();
+
+        List<CryptocurrencyPair> binanceParser = binance.btcParser();
+        for (CryptocurrencyPair binanceData : binanceParser) {
+            try {
+                CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
+                cryptocurrencyPair.setExchange("Huobi");
+                cryptocurrencyPair.setFirstCrypto(binanceData.getFirstCrypto());
+                cryptocurrencyPair.setSecondCrypto("BTC");
+                String a = binanceData.getFirstCrypto();
+                cryptocurrencyPair.setAmount(Double.valueOf(getAmount(a.replace(a, a.toLowerCase() + "btc"))));
+                cryptocurrencyPairs.add(cryptocurrencyPair);
+            } catch (NullPointerException e) {
                 continue;
             }
         }
@@ -55,34 +73,6 @@ public class Huobi {
         return cryptocurrencyPairs;
     }
 
-
-    public List<CryptocurrencyPair> btcParser() throws JsonProcessingException {
-        List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
-
-        ObjectMapper huobiMapper = new ObjectMapper();
-        JsonNode parseHuobi= huobiMapper.readTree(getAllCurrencyPairs("https://api.huobi.pro/market/tickers"));
-
-        for(int i = 0; i < 955; i++) { // 955
-            CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
-            try {
-                String firstCryptoName = getOneSymbolFromHuobi(parseHuobi.get("data").get(i).get("symbol").textValue()).toUpperCase();
-                cryptocurrencyPair.setExchange("Huobi");
-
-
-                boolean isSecondCryptoBTC = firstCryptoName.indexOf("BTC") != -1;
-                if (isSecondCryptoBTC == true){
-                    cryptocurrencyPair.setFirstCrypto(firstCryptoName.replace("BTC", ""));
-                    cryptocurrencyPair.setSecondCrypto("BTC");
-                    cryptocurrencyPair.setAmount(Double.valueOf(getAmount(parseHuobi.get("data").get(i).get("symbol").textValue())).doubleValue());
-                    cryptocurrencyPairs.add(cryptocurrencyPair);
-                }else continue;
-            }catch (NullPointerException e){
-                continue;
-            }
-        }
-
-        return cryptocurrencyPairs;
-    }
 
     /**
      * @param requestLink Принимает ссылку на GET запрос для получение всех связок

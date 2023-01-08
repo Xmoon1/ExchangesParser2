@@ -45,7 +45,7 @@ public class Mexc {
             cryptocurrencyPair.setExchange("Mexc");
             String firstCryptoName = parseMexc.get("data").get(i).get("symbol").textValue();
 
-            boolean secondCryptoIsUSDT = firstCryptoName.indexOf("_USDT") != -1;
+            boolean secondCryptoIsUSDT = firstCryptoName.contains("_USDT");
             if (secondCryptoIsUSDT == true){
                 cryptocurrencyPair.setFirstCrypto(firstCryptoName.replace("_USDT", ""));
                 cryptocurrencyPair.setAmount(Double.valueOf(parseMexc.get("data").get(i).get("last").textValue()));
