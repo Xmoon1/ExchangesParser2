@@ -4,6 +4,7 @@ import com.artmcoder.spreadsearch.api.models.CryptocurrencyPair;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author John
  */
 
-@SuppressWarnings("all")
+@Component
 public class Huobi {
     public List<CryptocurrencyPair> parser() {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
@@ -23,7 +24,6 @@ public class Huobi {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptocurrencyPairs.forEach(System.out::println);
         return cryptocurrencyPairs;
     }
 
@@ -33,7 +33,7 @@ public class Huobi {
         ObjectMapper huobiMapper = new ObjectMapper();
         JsonNode parseHuobi= huobiMapper.readTree(getAllCurrencyPairs("https://api.huobi.pro/market/tickers"));
 
-        for(int i = 0; i < 10; i++) { // 955
+        for(int i = 0; i < 955; i++) { // 955
             CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
             try {
                 String firstCryptoName = getOneSymbolFromHuobi(parseHuobi.get("data").get(i).get("symbol").textValue()).toUpperCase();
@@ -62,7 +62,7 @@ public class Huobi {
         ObjectMapper huobiMapper = new ObjectMapper();
         JsonNode parseHuobi= huobiMapper.readTree(getAllCurrencyPairs("https://api.huobi.pro/market/tickers"));
 
-        for(int i = 0; i < 10; i++) { // 955
+        for(int i = 0; i < 955; i++) { // 955
             CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
             try {
                 String firstCryptoName = getOneSymbolFromHuobi(parseHuobi.get("data").get(i).get("symbol").textValue()).toUpperCase();

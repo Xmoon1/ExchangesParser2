@@ -3,6 +3,7 @@ import com.artmcoder.spreadsearch.api.models.CryptocurrencyPair;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("all")
+@Component
 public class KuCoin {
     public List<CryptocurrencyPair> parser() {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
@@ -20,15 +21,11 @@ public class KuCoin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptocurrencyPairs.forEach(System.out::println);
         return cryptocurrencyPairs;
     }
 
 
-    /**
-     * @return <h3>All Cryptocurrencys with USDT </h3>
-     * @throws JsonProcessingException
-     */
+
     public List<CryptocurrencyPair> usdtParser() throws JsonProcessingException {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
         ObjectMapper kuCoinMapper = new ObjectMapper();

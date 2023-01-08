@@ -1,6 +1,7 @@
 package com.artmcoder.spreadsearch.api.parsers;
 
 import com.artmcoder.spreadsearch.api.models.CryptocurrencyPair;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@SuppressWarnings("all")
 public class Binance {
 
     public List<CryptocurrencyPair> parser() {
@@ -23,14 +23,13 @@ public class Binance {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptocurrencyPairs.forEach(System.out::println);
         return cryptocurrencyPairs;
     }
 
 
-    private List<CryptocurrencyPair> usdtParser() throws IOException{
+    public List<CryptocurrencyPair> usdtParser() throws IOException{
     List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 1; i++) {
             Document binance = binance = Jsoup.connect("https://www.binance.com/en/markets/spot-USDT?p=" + i).get();
             Elements binanceCryptoNames = binance.getElementsByClass("css-vlibs4");
             for (Element crypto : binanceCryptoNames) {
@@ -47,7 +46,7 @@ public class Binance {
 
     public List<CryptocurrencyPair> btcParser() throws IOException{
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 1; i++) {
             Document binance = binance = Jsoup.connect("https://www.binance.com/en/markets/spot-BTC?p=" + i).get();
             Elements binanceCryptoNames = binance.getElementsByClass("css-vlibs4");
             for (Element crypto : binanceCryptoNames) {

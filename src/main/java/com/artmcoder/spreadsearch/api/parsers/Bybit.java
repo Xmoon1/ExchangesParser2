@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.checkerframework.checker.units.qual.C;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author John
  */
 
-@SuppressWarnings("all")
+@Component
 public class Bybit {
     public List<CryptocurrencyPair> parser() {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
@@ -25,7 +26,6 @@ public class Bybit {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptocurrencyPairs.forEach(System.out::println);
         return cryptocurrencyPairs;
     }
 

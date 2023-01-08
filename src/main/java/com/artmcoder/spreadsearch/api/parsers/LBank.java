@@ -4,18 +4,21 @@ import com.artmcoder.spreadsearch.api.models.CryptocurrencyPair;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author John
  */
 
-@SuppressWarnings("all")
+@Component
+@RequiredArgsConstructor
 public class LBank {
-
     public List<CryptocurrencyPair> parser() {
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
         try {
@@ -24,7 +27,6 @@ public class LBank {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptocurrencyPairs.forEach(System.out::println);
         return cryptocurrencyPairs;
     }
 
@@ -34,27 +36,19 @@ public class LBank {
      * @throws IOException
      */
     public List<CryptocurrencyPair> usdtParser() throws  IOException{
-        ObjectMapper lbankMapper = new ObjectMapper();
-        JsonNode parseLbank= lbankMapper.readTree(getAllCurrencyPairs("https://api.lbkex.com/v2/currencyPairs.do"));
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
 
-        // Return all pairs with their price //886
-        for(int i = 0; i < 886; i++) {
-            CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
+        Binance binance = new Binance();
+        List<CryptocurrencyPair> some = binance.usdtParser();
+        for (CryptocurrencyPair binanceData : some) {
             try {
-//
-                String firstCryptoName = getOneSymbolFromLbank(parseLbank.get("data").get(i).textValue());
-                boolean isExistUSDT = firstCryptoName.indexOf("_usdt") != -1;
-                if (isExistUSDT == true){
-                    cryptocurrencyPair.setExchange("LBank");
-                    cryptocurrencyPair.setFirstCrypto(firstCryptoName.replaceAll("^\"|\"$", "").replace("_usdt", "").toUpperCase());
-                    cryptocurrencyPair.setSecondCrypto("USDT");
-                    cryptocurrencyPair.setAmount(Double.valueOf(getAmount(parseLbank.get("data").get(i).textValue())));
-                    cryptocurrencyPairs.add(cryptocurrencyPair);
-                }else continue;
-
-
-
+                CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
+                cryptocurrencyPair.setExchange("LBank");
+                cryptocurrencyPair.setFirstCrypto(binanceData.getFirstCrypto());
+                String a = binanceData.getFirstCrypto();
+                cryptocurrencyPair.setAmount(Double.valueOf(getAmount(a.replace(a, a.toLowerCase() + "_usdt"))));
+                cryptocurrencyPair.setSecondCrypto("USDT");
+                cryptocurrencyPairs.add(cryptocurrencyPair);
             }catch (NullPointerException e){
                 continue;
             }
@@ -68,33 +62,25 @@ public class LBank {
      * @throws IOException
      */
     public List<CryptocurrencyPair> btcParser() throws  IOException{
-        ObjectMapper lbankMapper = new ObjectMapper();
-        JsonNode parseLbank= lbankMapper.readTree(getAllCurrencyPairs("https://api.lbkex.com/v2/currencyPairs.do"));
         List<CryptocurrencyPair> cryptocurrencyPairs = new ArrayList<>();
 
-        // Return all pairs with their price //886
-        for(int i = 0; i < 886; i++) {
-            CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
+        Binance binance = new Binance();
+        List<CryptocurrencyPair> some = binance.btcParser();
+        for (CryptocurrencyPair binanceData : some) {
             try {
-//
-                String firstCryptoName = getOneSymbolFromLbank(parseLbank.get("data").get(i).textValue());
-                boolean isExistBTC = firstCryptoName.indexOf("_btc") != -1;
-                if (isExistBTC == true){
-                    cryptocurrencyPair.setExchange("LBank");
-                    cryptocurrencyPair.setFirstCrypto(firstCryptoName.replaceAll("^\"|\"$", "").replace("_btc", "").toUpperCase());
-                    cryptocurrencyPair.setSecondCrypto("BTC");
-                    cryptocurrencyPair.setAmount(Double.valueOf(getAmount(parseLbank.get("data").get(i).textValue())));
-                    cryptocurrencyPairs.add(cryptocurrencyPair);
-                }else continue;
-
-
+                CryptocurrencyPair cryptocurrencyPair = new CryptocurrencyPair();
+                cryptocurrencyPair.setExchange("LBank");
+                cryptocurrencyPair.setFirstCrypto(binanceData.getFirstCrypto());
+                String a = binanceData.getFirstCrypto();
+                cryptocurrencyPair.setAmount(Double.valueOf(getAmount(a.replace(a, a.toLowerCase() + "_btc"))));
+                cryptocurrencyPair.setSecondCrypto("BTC");
+                cryptocurrencyPairs.add(cryptocurrencyPair);
             }catch (NullPointerException e){
                 continue;
             }
         }
         return cryptocurrencyPairs;
     }
-
 
     /**
      * @param requestLink Принимает ссылку на GET запрос для получение всех связок
